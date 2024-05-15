@@ -1,0 +1,81 @@
+
+const ctx = document.getElementById('myChart');
+
+var getDaysArray = function(start, end) {
+    for(var arr=[],dt=new Date(start); dt<=new Date(end); dt.setDate(dt.getDate()+1)){
+        arr.push(new Date(dt).toISOString().split('T')[0]);
+    }
+    return arr;
+};
+
+function makechart(prices,date1,date2){
+    const labels = getDaysArray(date1,date2);
+    console.log(labels);
+const data = {
+  labels: labels,
+  datasets: [{
+    label: 'My First Dataset',
+    data: prices,
+    fill: false,
+    borderColor: 'rgb(75, 192, 192)',
+    tension: 0.1
+  }]
+};
+// </block:setup>
+
+// <block:config:0>
+const config = {
+  type: 'line',
+  data: data,
+};
+
+const stackedLine = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: {
+        scales: {
+            y: {
+                stacked: true
+            }
+        }
+    }
+});
+
+}
+
+async function getPrice(pair){
+    
+    let url = "https://api.polygon.io/v2/aggs/ticker/C:"+pair+"/range/1/day/2023-01-05/2023-01-09?adjusted=true&sort=asc&apiKey=uNUbKI4lCdBnOYr2le5M9K8iacpoD79b";
+let response = await fetch(url);
+
+if (response.ok) { // if HTTP-status is 200-299
+  // get the response body (the method explained below)
+    let json = await response.json();
+    let price = json["results"];
+    let plainPrices = [];
+    for (var x in price){
+	plainPrices.push(price[x]["c"]);
+
+    }
+    return plainPrices;
+    
+} else {
+  alert("HTTP-Error: " + response.status);
+}
+
+}
+
+
+
+getPrice("EURAUD").then(
+    function(value){
+	
+	makechart(value,"2024-04-05","2024-04-09");
+
+
+
+    },
+    function(error){console.log("fuckup on aile 2");}
+
+)
+

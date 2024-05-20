@@ -144,9 +144,12 @@ if (response.ok) { // if HTTP-status is 200-299
 }
 
 
+var last = new Date() 
+var yesterday = last - 1000 * 60 * 60 * 24 * 2 * 10;   // current date's milliseconds - 1,000 ms * 60 s * 60 mins * 24 hrs * (# of days beyond one to go back)
+yesterday = new Date(yesterday);
+var first = yesterday.toLocaleDateString('en-ca');
+last = last.toLocaleDateString('en-ca');
 
-var first =  "2024-05-01";
-var last = "2024-05-10";
 
 const card = new Card("EURUSD",'container');
 const card1 = new Card("EURAUD",'container');
@@ -160,16 +163,5 @@ card3.createChart(first,last);
 
 
 
-setTimeout(function(){
-
-    var first = "2024-04-01";
-    var last = "2024-04-10";
-    card.updateChart(first,last);
-    card1.updateChart(first,last);
-    card2.updateChart(first,last);
-
-
-
-}, 3000000);
 
 
